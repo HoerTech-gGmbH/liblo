@@ -1,0 +1,28 @@
+name: compile liblo to DLL with MinGW
+on:
+  push:
+    branches: [ main ]
+jobs:
+  build:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+    - uses: actions/checkout@v2
+    - uses: msys2/setup-msys2@v2
+      with:
+        release: false
+        msystem: MINGW32
+    - name: Print system version
+      run: uname
+    - run: |
+        ./autogen.sh
+        mkdir -p destdir
+        make
+        make DESTDIR=$PWD/destdir install
+    - name: upload install dir
+      uses: actions/upload-artifact@master
+      with:
+        name: liblo-windows
+        path: destdir
