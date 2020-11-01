@@ -8,12 +8,19 @@ jobs:
     defaults:
       run:
         shell: msys2 {0}
+    strategy:
+      fail-fast: false
+      matrix:
+        include: [
+          { msystem: MINGW64, arch: x86_64 },
+          { msystem: MINGW32, arch: i686   }
+        ]
     steps:
     - uses: actions/checkout@v2
     - uses: msys2/setup-msys2@v2
       with:
         release: false
-        msystem: MINGW32
+        msystem: ${{ matrix.msystem }}
     - name: Print system version
       run: uname
     - run: |
